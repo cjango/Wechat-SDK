@@ -73,4 +73,74 @@ class Reply extends Wechat
     {
         self::$response['Content'] = $content;
     }
+
+    /**
+     * 回复图片消息
+     * @param  [type] $media_id [description]
+     */
+    public static function image($media_id)
+    {
+        self::$response['Image']['MediaId'] = $media_id;
+    }
+
+    /**
+     * 回复图片消息
+     * @param  [type] $media_id [description]
+     */
+    public static function voice($media_id)
+    {
+        self::$response['Voice']['MediaId'] = $media_id;
+    }
+
+    /**
+     * 回复视频消息
+     * @return [type] [description]
+     */
+    public static function video($media_id, $title, $description = '')
+    {
+        self::$response['Video']['MediaId']     = $media_id;
+        self::$response['Video']['Title']       = $title;
+        self::$response['Video']['Description'] = $description;
+    }
+
+    /**
+     * 回复音乐消息
+     * @param  [type] $title        [description]
+     * @param  [type] $description  [description]
+     * @param  [type] $music_url    [description]
+     * @param  [type] $hq_music_url [description]
+     * @param  [type] $media_id     [description]
+     * @return [type]               [description]
+     */
+    public function music($title, $description, $music_url, $hq_music_url, $media_id)
+    {
+        self::$response['Music']['Title']        = $title;
+        self::$response['Music']['Description']  = $description;
+        self::$response['Music']['MusicUrl']     = $music_url;
+        self::$response['Music']['HQMusicUrl']   = $hq_music_url;
+        self::$response['Music']['ThumbMediaId'] = $media_id;
+    }
+
+    /**
+     * 回复图文消息
+     * @param  [type] $news $content[] = [$title, $description, $cover, $url];
+     * @return [type]       [description]
+     */
+    public static function articles($news)
+    {
+        $articles = [];
+        foreach ($news as $key => $value) {
+            list(
+                $articles[$key]['Title'],
+                $articles[$key]['Description'],
+                $articles[$key]['PicUrl'],
+                $articles[$key]['Url']
+            ) = $value;
+            if ($key >= 9) {
+                break;
+            } //最多只允许10条新闻
+        }
+        self::$response['ArticleCount'] = count($articles);
+        self::$response['Articles']     = $articles;
+    }
 }
