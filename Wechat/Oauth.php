@@ -21,7 +21,6 @@ class Oauth extends Wechat
      * @var array
      */
     protected static $url = [
-        /* OAuth2.0授权地址 */
         'oauth_authorize'    => 'https://open.weixin.qq.com/connect/oauth2/authorize',
         'oauth_user_token'   => 'https://api.weixin.qq.com/sns/oauth2/access_token',
         'oauth_get_userinfo' => 'https://api.weixin.qq.com/sns/userinfo',

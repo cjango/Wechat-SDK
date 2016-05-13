@@ -30,4 +30,22 @@ class Material extends Wechat
         'material_count'    => 'https://api.weixin.qq.com/cgi-bin/material/get_materialcount', // 获取永久素材数量
         'material_lists'    => 'https://api.weixin.qq.com/cgi-bin/material/batchget_material', // 获取永久素材列表
     ];
+
+    /**
+     * 新增临时素材
+     * @return [type] [description]
+     */
+    public static function upload()
+    {
+        #Todo..
+    }
+
+    /**
+     * 获取临时素材
+     * @return [type] [description]
+     */
+    public static function get()
+    {
+        #Todo..
+    }
 }

@@ -16,17 +16,6 @@ namespace tools;
 class Wechat
 {
     /**
-     * 接口名称与URL映射
-     * @var array
-     */
-    protected static $url = [
-        /* 发送客服消息URL */
-        'custom_send'  => 'https://api.weixin.qq.com/cgi-bin/message/custom/send',
-        'jsapi_ticket' => 'https://api.weixin.qq.com/cgi-bin/ticket/getticket', // JSAPI_TICKET获取地址
-        'get_short'    => 'https://api.mch.weixin.qq.com/tools/shorturl', // 转换短链接
-    ];
-
-    /**
      * 保存错误信息
      * @var string
      */
@@ -114,7 +103,7 @@ class Wechat
      */
     public static function error($msg = null)
     {
-        if (!is_numeric($msg)) {
+        if (!is_null($msg)) {
             self::$error = $msg;
         } else {
             return self::$error;

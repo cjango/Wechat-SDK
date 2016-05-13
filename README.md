@@ -1,3 +1,10 @@
-# Wechat-SDK
+## 微信SDK静态版
 
-###全静态方式实现的微信接口调用类
+使用方式
+
+$config = [
+    'appid'  => '',
+    'secret' => '',
+];
+\tools\Wechat::init($config);
+$token = \tools\WechatToken::get();

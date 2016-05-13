@@ -34,16 +34,6 @@ class Pay extends Wechat
     ];
 
     /**
-     * 返回随机填充的字符串
-     */
-    protected static function getRandomStr($lenght = 16)
-    {
-        $strPol = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
-        $strPol = str_repeat($str_pol, 3);
-        return substr(str_shuffle($str_pol), 0, $lenght);
-    }
-
-    /**
      * 统一下单支付
      * @param  string $orderId    系统订单号
      * @param  string $body       产品描述
@@ -59,7 +49,7 @@ class Pay extends Wechat
         $params = [
             'appid'            => parent::$config['appid'],
             'mch_id'           => parent::$config['mch_id'],
-            'nonce_str'        => self::_getRandomStr(),
+            'nonce_str'        => uniqid(),
             'body'             => $body,
             'out_trade_no'     => $orderId,
             'total_fee'        => $money * 100, // 转换成分
@@ -89,7 +79,7 @@ class Pay extends Wechat
         $params = [
             'appid'     => parent::$config['appid'],
             'mch_id'    => parent::$config['mch_id'],
-            'nonce_str' => self::_getRandomStr(),
+            'nonce_str' => uniqid(),
         ];
         if ($type == 'out_trade_no') {
             $params['out_trade_no'] = $orderId;
@@ -214,16 +204,5 @@ class Pay extends Wechat
         ksort($params);
         $params['key'] = parent::$config['paykey'];
         return strtoupper(md5(urldecode(http_build_query($params))));
-    }
-
-    /**
-     * 返回随机填充的字符串
-     * @param  integer $length 长度
-     * @return string(16)
-     */
-    private static function _getRandomStr($lenght = 16)
-    {
-        $str_pol = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
-        return substr(str_shuffle($str_pol), 0, $lenght);
     }
 }

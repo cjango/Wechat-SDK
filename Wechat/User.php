@@ -21,14 +21,13 @@ class User extends Wechat
      * @var array
      */
     protected static $url = [
-        'user_get'        => 'https://api.weixin.qq.com/cgi-bin/user/get', // 获取全部关注用户
-        'user_info'       => 'https://api.weixin.qq.com/cgi-bin/user/info', // 获取用户信息
-        'user_info_batch' => 'https://api.weixin.qq.com/cgi-bin/user/info/batchget', // 批量获取用户信息
-        'user_remark'     => 'https://api.weixin.qq.com/cgi-bin/user/info/updateremark', // 用户备注
-        /* 用户分组相关URL */
+        'user_get'        => 'https://api.weixin.qq.com/cgi-bin/user/get',
+        'user_info'       => 'https://api.weixin.qq.com/cgi-bin/user/info',
+        'user_info_batch' => 'https://api.weixin.qq.com/cgi-bin/user/info/batchget',
+        'user_remark'     => 'https://api.weixin.qq.com/cgi-bin/user/info/updateremark',
         'user_in_group'   => 'https://api.weixin.qq.com/cgi-bin/groups/getid',
         'user_to_group'   => 'https://api.weixin.qq.com/cgi-bin/groups/members/update',
-        'batch_to_group'  => 'https://api.weixin.qq.com/cgi-bin/groups/members/batchupdate?access_token=ACCESS_TOKEN',
+        'batch_to_group'  => 'https://api.weixin.qq.com/cgi-bin/groups/members/batchupdate',
     ];
 
     /**

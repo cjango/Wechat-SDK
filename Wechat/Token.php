@@ -1,4 +1,4 @@
-<?php
+    <?php
 // +------------------------------------------------+
 // |http://www.cjango.com                           |
 // +------------------------------------------------+
@@ -22,6 +22,7 @@ class Token extends Wechat
      */
     protected static $url = [
         'access_token' => 'https://api.weixin.qq.com/cgi-bin/token', // 获取ACCESS_TOKEN
+        'jsapi_ticket' => 'https://api.weixin.qq.com/cgi-bin/ticket/getticket', // JSAPI_TICKET获取地址
     ];
 
     public static function get()
@@ -37,5 +38,10 @@ class Token extends Wechat
         } else {
             return false;
         }
+    }
+
+    public static function ticket()
+    {
+        #Todo..
     }
 }

@@ -23,6 +23,7 @@ class QRcode extends Wechat
     protected static $url = [
         'qrcode_create' => 'https://api.weixin.qq.com/cgi-bin/qrcode/create',
         'qrcode_show'   => 'https://mp.weixin.qq.com/cgi-bin/showqrcode',
+        'short_url'     => 'https://api.mch.weixin.qq.com/tools/shorturl', // 转换短链接
     ];
 
     /**
@@ -58,17 +59,38 @@ class QRcode extends Wechat
     public static function limit($scene_str)
     {
         $params = [
-            'action_name' => 'QR_LIMIT_SCENE',
-            'action_info' => [
+            'action_name'  => 'QR_LIMIT_SCENE',
+            'action_info'  => [
                 'scene' => [
                     'scene_str' => $scene_str,
                 ],
             ],
+            'access_token' => parent::$config['access_token'],
         ];
         $params = json_encode($params, JSON_UNESCAPED_UNICODE);
         $result = Utils::api(self::$url['qrcode_create'] . '?access_token=' . parent::$config['access_token'], $params, 'POST');
         if ($result) {
             return self::$url['qrcode_show'] . '?ticket=' . $result['ticket'];
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 转换短链接
+     * @param  [type] $longUrl
+     * @return [type]
+     */
+    public static function short($longUrl)
+    {
+        $params = [
+            'action'   => 'long2short',
+            'long_url' => $longUrl,
+        ];
+        $params = json_encode($params);
+        $result = Utils::api(self::$url['short_url'] . '?access_token=' . parent::$config['access_token'], $params, 'POST');
+        if ($result) {
+            return $result;
         } else {
             return false;
         }
