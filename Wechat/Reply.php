@@ -32,8 +32,7 @@ class Reply extends Wechat
      */
     public static function request()
     {
-        // 它说是POST,然并卵..
-        $postStr = isset($GLOBALS["HTTP_RAW_POST_DATA"]) ? $GLOBALS["HTTP_RAW_POST_DATA"] : null;
+        $postStr = file_get_contents("php://input");
 
         if (!empty($postStr)) {
             $data                 = Utils::xml2array($postStr);

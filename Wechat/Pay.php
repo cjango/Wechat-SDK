@@ -42,9 +42,9 @@ class Pay extends Wechat
      * @param  string $notify_url 回调URL
      * @param  string $openid     支付用户
      * @param  string $attach     附加信息
-     * @return array
+     * @return boolean|JSON       直接用于H5调用支付的API参数
      */
-    public static function unifiedOrder($orderId, $body, $money, $tradeType, $notifyUrl = '', $openid = '', $attach = '')
+    public static function unifiedOrder($orderId, $body, $money, $tradeType = 'JSAPI', $notifyUrl = '', $openid = '', $attach = '')
     {
         $params = [
             'appid'            => parent::$config['appid'],
@@ -57,7 +57,7 @@ class Pay extends Wechat
             'notify_url'       => $notifyUrl,
             'trade_type'       => $tradeType,
         ];
-        if (!empty($openid) && $notifyUrl == 'JSAPI') {
+        if (!empty($openid) && $tradeType == 'JSAPI') {
             $params['openid'] = $openid;
         }
         if (!empty($attach)) {
@@ -66,7 +66,29 @@ class Pay extends Wechat
         $params['sign'] = self::_getOrderSign($params);
         $data           = Utils::array2xml($params);
         $data           = Utils::http(self::$url['unified_order'], $data, 'POST');
-        return self::parsePayResult(Utils::xml2array($data));
+        $result         = self::parsePayResult(Utils::xml2array($data));
+
+        if ($result) {
+            return self::createPayParams($result['prepay_id']);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 创建支付参数
+     * @param  [type] $prepay_id [description]
+     * @return JSON
+     */
+    private static function createPayParams($prepay_id)
+    {
+        $params['appId']     = parent::$config['appid'];
+        $params['timeStamp'] = (string) NOW_TIME;
+        $params['nonceStr']  = uniqid();
+        $params['package']   = 'prepay_id=' . $prepay_id;
+        $params['signType']  = 'MD5';
+        $params['paySign']   = self::_getOrderSign($params);
+        return json_encode($params);
     }
 
     /**
@@ -100,16 +122,17 @@ class Pay extends Wechat
      */
     public static function parsePayRequest($checkSign = true)
     {
-        $data = parent::request();
+        $post = file_get_contents("php://input");
+        $data = Utils::xml2array($post);
         if (empty($data)) {
-            parent::$error = '回调结果解析失败';
+            Wechat::error('回调结果解析失败');
             return false;
         }
         if ($checkSign) {
             $sign = $data['sign'];
             unset($data['sign']);
             if (self::_getOrderSign($data) != $sign) {
-                parent::$error = '签名校验失败';
+                Wechat::error('签名校验失败');
                 return false;
             }
         }
@@ -126,11 +149,11 @@ class Pay extends Wechat
             if ($data['result_code'] == 'SUCCESS') {
                 return $data;
             } else {
-                parent::$error = $data['err_code'];
+                Wechat::error($data['err_code']);
                 return false;
             }
         } else {
-            parent::$error = $data['return_msg'];
+            Wechat::error($data['return_msg']);
             return false;
         }
     }
@@ -170,7 +193,6 @@ class Pay extends Wechat
         if ($ip !== null) {
             return $ip[$type];
         }
-
         if ($adv) {
             if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $arr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
@@ -178,7 +200,6 @@ class Pay extends Wechat
                 if (false !== $pos) {
                     unset($arr[$pos]);
                 }
-
                 $ip = trim($arr[0]);
             } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
                 $ip = $_SERVER['HTTP_CLIENT_IP'];
