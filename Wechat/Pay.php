@@ -42,9 +42,10 @@ class Pay extends Wechat
      * @param  string $notify_url 回调URL
      * @param  string $openid     支付用户
      * @param  string $attach     附加信息
+     * @param  array  $extends    订单扩展数据
      * @return boolean|JSON       直接用于H5调用支付的API参数
      */
-    public static function unifiedOrder($orderId, $body, $money, $tradeType = 'JSAPI', $notifyUrl = '', $openid = '', $attach = '')
+    public static function unifiedOrder($orderId, $body, $money, $tradeType = 'JSAPI', $notifyUrl = '', $openid = '', $attach = '', $extends = [])
     {
         $params = [
             'appid'            => parent::$config['appid'],
@@ -64,9 +65,10 @@ class Pay extends Wechat
             $params['attach'] = $attach;
         }
         $params['sign'] = self::_getOrderSign($params);
-        $data           = Utils::array2xml($params);
-        $data           = Utils::http(self::$url['unified_order'], $data, 'POST');
-        $result         = self::parsePayResult(Utils::xml2array($data));
+
+        $data   = Utils::array2xml($params);
+        $data   = Utils::http(self::$url['unified_order'], $data, 'POST');
+        $result = self::parsePayResult(Utils::xml2array($data));
 
         if ($result) {
             return self::createPayParams($result['prepay_id']);

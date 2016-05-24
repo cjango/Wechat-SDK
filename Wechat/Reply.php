@@ -11,7 +11,7 @@ namespace tools\Wechat;
 use tools\Wechat;
 
 /**
- *
+ * 被动消息回复
  */
 class Reply extends Wechat
 {
@@ -48,18 +48,17 @@ class Reply extends Wechat
      * @param  string $type    [description]
      * @return [type]          [description]
      */
-    public static function reply($content, $type = 'text')
+    public static function response($content, $type = 'text')
     {
-        /* 基础数据 */
         self::$response = [
             'ToUserName'   => self::$request['fromusername'],
             'FromUserName' => self::$request['tousername'],
             'CreateTime'   => time(),
             'MsgType'      => $type,
         ];
-        /* 添加类型数据 */
+
         self::$type($content);
-        /* 转换数据为XML */
+
         $response = Utils::array2xml(self::$response);
         exit($response);
     }
@@ -71,5 +70,45 @@ class Reply extends Wechat
     private static function text($content)
     {
         self::$response['Content'] = $content;
+    }
+
+    /**
+     * 回复图文列表消息
+     * @param  [type] $content [description]
+     */
+    private static function news($news)
+    {
+        $articles = [];
+
+        foreach ($news as $key => $value) {
+            list(
+                $articles[$key]['Title'],
+                $articles[$key]['Description'],
+                $articles[$key]['PicUrl'],
+                $articles[$key]['Url']
+            ) = $value;
+            if ($key >= 9) {
+                break;
+            }
+        }
+
+        self::$response['ArticleCount'] = count($articles);
+        self::$response['Articles']     = $articles;
+    }
+
+    /**
+     * 回复音乐信息
+     * @param  string $content 要回复的音乐
+     */
+    private static function music($music)
+    {
+        list(
+            $music['Title'],
+            $music['Description'],
+            $music['MusicUrl'],
+            $music['HQMusicUrl']
+        ) = $music;
+
+        self::$response['Music'] = $music;
     }
 }
